@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Reader</title>
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- HTML5-QRCode Library -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+  <div class="container">
+    <a href="../../" class="back-btn">← Back to Tools Hub</a>
+
+    <div class="scanner-box">
+      <h2>QR Code Scanner</h2>
+      <p style="margin-bottom: 20px;">Grant camera access to begin scanning.</p>
+
+      <!-- Video Feed Container -->
+      <div id="reader"></div>
+
+      <!-- Result Container -->
+      <div id="result-container" class="result-box" style="display: none;">
+        <strong>Scanned Content:</strong>
+        <p id="scanned-text" style="margin: 10px 0; font-size: 1.1rem; color: #1a1a1a;"></p>
+        <button id="copy-btn" class="btn">Copy to Clipboard</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
