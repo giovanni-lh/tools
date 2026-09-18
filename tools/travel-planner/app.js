@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Render LaTeX Title in Old-Style Serif
   if (window.katex) {
     katex.render("\\mathcal{T}\\text{ravel } \\mathcal{P}\\text{lanner}", document.getElementById("latex-title"), {
       throwOnError: false
@@ -12,7 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let resizedImageData = "";
 
-  // Rescale and resize image using Canvas
+  // Load initial state strictly from the URL Hash
+  loadStateFromHash();
+
+  // Image downscaling
   photoInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -22,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        const maxDim = 120; // Small preview thumbnail size
+        const maxDim = 100; // Small max dimension to keep URL hash short
         let width = img.width;
         let height = img.height;
 
@@ -42,33 +44,39 @@ document.addEventListener("DOMContentLoaded", () => {
         canvas.height = height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, width, height);
-        resizedImageData = canvas.toDataURL("image/jpeg", 0.7); // Rescaled JPEG
+        resizedImageData = canvas.toDataURL("image/jpeg", 0.5); // Lower quality JPEG for smaller string size
       };
       img.src = event.target.result;
     };
     reader.readAsDataURL(file);
   });
 
-  // Handle Form Submission
+  // Handle Form Submit
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const date = document.getElementById("date").value;
-    const time = document.getElementById("time").value;
-    const destination = document.getElementById("destination").value;
-    const activity = document.getElementById("activity").value;
-    const mapLink = document.getElementById("map-link").value;
+    const itemData = {
+      id: Date.now().toString(),
+      date: document.getElementById("date").value,
+      time: document.getElementById("time").value,
+      destination: document.getElementById("destination").value,
+      activity: document.getElementById("activity").value,
+      mapLink: document.getElementById("map-link").value,
+      photo: resizedImageData
+    };
 
-    addItineraryItem({ date, time, destination, activity, mapLink, photo: resizedImageData });
+    addItineraryItemToDOM(itemData);
+    updateHashAndQR();
 
     form.reset();
     resizedImageData = "";
   });
 
-  function addItineraryItem(data) {
+  function addItineraryItemToDOM(data) {
     const li = document.createElement("li");
     li.className = "drag-item";
     li.draggable = true;
+    li.dataset.itemJson = JSON.stringify(data);
 
     li.innerHTML = `
       <span class="drag-handle">☰</span>
@@ -83,16 +91,22 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     // Delete item listener
-    li.querySelector(".delete-btn").addEventListener("click", () => li.remove());
+    li.querySelector(".delete-btn").addEventListener("click", () => {
+      li.remove();
+      updateHashAndQR();
+    });
 
     // Drag and drop event listeners
     li.addEventListener("dragstart", () => li.classList.add("dragging"));
-    li.addEventListener("dragend", () => li.classList.remove("dragging"));
+    li.addEventListener("dragend", () => {
+      li.classList.remove("dragging");
+      updateHashAndQR();
+    });
 
     list.appendChild(li);
   }
 
-  // Drag over container handler
+  // Drag over container
   list.addEventListener("dragover", (e) => {
     e.preventDefault();
     const draggingItem = document.querySelector(".dragging");
@@ -105,6 +119,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     list.insertBefore(draggingItem, nextSibling);
   });
+
+  // --- URL HASH ENCODING & QR CODE LOGIC ---
+
+  function updateHashAndQR() {
+    const items = [...list.querySelectorAll(".drag-item")].map((li) => JSON.parse(li.dataset.itemJson));
+    
+    if (items.length === 0) {
+      window.history.replaceState(null, "", window.location.pathname);
+      document.getElementById("qr-container").innerHTML = "<p style='color: #839496;'>Add items to generate share QR</p>";
+      return;
+    }
+
+    // Compress JSON string using LZ-String
+    const jsonString = JSON.stringify(items);
+    const compressed = LZString.compressToEncodedURIComponent(jsonString);
+    
+    // Update the browser URL without refreshing
+    window.history.replaceState(null, "", `#${compressed}`);
+
+    // Render updated QR Code
+    const fullUrl = window.location.href;
+    const qrContainer = document.getElementById("qr-container");
+    qrContainer.innerHTML = '<canvas id="share-qr"></canvas>';
+    
+    QRCode.toCanvas(document.getElementById("share-qr"), fullUrl, { width: 180 }, (err) => {
+      if (err) console.error("QR Code Error:", err);
+    });
+  }
+
+  function loadStateFromHash() {
+    if (!window.location.hash || window.location.hash.length <= 1) return;
+
+    try {
+      const compressed = window.location.hash.substring(1);
+      const decompressed = LZString.decompressFromEncodedURIComponent(compressed);
+      
+      if (decompressed) {
+        const items = JSON.parse(decompressed);
+        items.forEach((item) => addItineraryItemToDOM(item));
+        updateHashAndQR();
+      }
+    } catch (err) {
+      console.error("Failed to parse URL hash data:", err);
+    }
+  }
 
   function escapeHtml(str) {
     return str.replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));

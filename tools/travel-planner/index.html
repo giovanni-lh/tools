@@ -8,6 +8,9 @@
   <!-- KaTeX for Old Style Serif Math/Text rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <!-- URL Hash Compression & QR Code libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 
 <body class="solarized-theme">
@@ -19,7 +22,7 @@
       <p class="subtitle">Organize itinerary activities with drag-and-drop reordering.</p>
     </header>
 
-    <!-- Add Activity Form -->
+    <!-- Form Section -->
     <div class="card form-card">
       <h2>Add Itinerary Item</h2>
       <form id="planner-form">
@@ -58,11 +61,18 @@
       </form>
     </div>
 
-    <!-- Drag & Drop Itinerary List -->
+    <!-- Itinerary Section -->
     <div class="card">
       <h2>Itinerary</h2>
       <p class="drag-hint">Drag handle ☰ to reorder items</p>
       <ul id="itinerary-list" class="drag-list"></ul>
+    </div>
+
+    <!-- Share to Mobile Card -->
+    <div class="card" style="text-align: center;">
+      <h2>Open on Phone</h2>
+      <p style="margin-bottom: 10px; font-size: 0.9rem;">Scan this QR code with your mobile camera to transfer the exact itinerary state:</p>
+      <div id="qr-container" style="margin-top: 10px;"></div>
     </div>
   </div>
 
