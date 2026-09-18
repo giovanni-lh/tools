@@ -8,10 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("planner-form");
   const list = document.getElementById("itinerary-list");
   const photoInput = document.getElementById("photo-input");
+  
+  const generateUrlBtn = document.getElementById("generate-url-btn");
+  const urlOutputContainer = document.getElementById("url-output-container");
+  const generatedUrlInput = document.getElementById("generated-url");
+  const copyUrlBtn = document.getElementById("copy-url-btn");
 
   let resizedImageData = "";
 
-  // Load initial state strictly from the URL Hash
+  // Load initial state strictly from URL Hash on page visit
   loadStateFromHash();
 
   // Image downscaling
@@ -24,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        const maxDim = 100; // Small max dimension to keep URL hash short
+        const maxDim = 100; // Keep image small to restrict total URL length
         let width = img.width;
         let height = img.height;
 
@@ -44,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         canvas.height = height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, width, height);
-        resizedImageData = canvas.toDataURL("image/jpeg", 0.5); // Lower quality JPEG for smaller string size
+        resizedImageData = canvas.toDataURL("image/jpeg", 0.5);
       };
       img.src = event.target.result;
     };
@@ -66,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     addItineraryItemToDOM(itemData);
-    updateHashAndQR();
 
     form.reset();
     resizedImageData = "";
@@ -93,15 +97,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Delete item listener
     li.querySelector(".delete-btn").addEventListener("click", () => {
       li.remove();
-      updateHashAndQR();
     });
 
     // Drag and drop event listeners
     li.addEventListener("dragstart", () => li.classList.add("dragging"));
-    li.addEventListener("dragend", () => {
-      li.classList.remove("dragging");
-      updateHashAndQR();
-    });
+    li.addEventListener("dragend", () => li.classList.remove("dragging"));
 
     list.appendChild(li);
   }
@@ -120,33 +120,46 @@ document.addEventListener("DOMContentLoaded", () => {
     list.insertBefore(draggingItem, nextSibling);
   });
 
-  // --- URL HASH ENCODING & QR CODE LOGIC ---
+  // --- GENERATE HASH URL & COPY LOGIC ---
 
-  function updateHashAndQR() {
+  generateUrlBtn.addEventListener("click", () => {
     const items = [...list.querySelectorAll(".drag-item")].map((li) => JSON.parse(li.dataset.itemJson));
-    
+
     if (items.length === 0) {
-      window.history.replaceState(null, "", window.location.pathname);
-      document.getElementById("qr-container").innerHTML = "<p style='color: #839496;'>Add items to generate share QR</p>";
+      alert("Please add at least one item to your itinerary before generating a URL.");
       return;
     }
 
     // Compress JSON string using LZ-String
     const jsonString = JSON.stringify(items);
     const compressed = LZString.compressToEncodedURIComponent(jsonString);
-    
-    // Update the browser URL without refreshing
+
+    // Update browser URL hash without refreshing
+    const newUrl = `${window.location.origin}${window.location.pathname}#${compressed}`;
     window.history.replaceState(null, "", `#${compressed}`);
 
-    // Render updated QR Code
-    const fullUrl = window.location.href;
-    const qrContainer = document.getElementById("qr-container");
-    qrContainer.innerHTML = '<canvas id="share-qr"></canvas>';
-    
-    QRCode.toCanvas(document.getElementById("share-qr"), fullUrl, { width: 180 }, (err) => {
-      if (err) console.error("QR Code Error:", err);
-    });
-  }
+    // Show output field
+    generatedUrlInput.value = newUrl;
+    urlOutputContainer.style.display = "block";
+  });
+
+  copyUrlBtn.addEventListener("click", async () => {
+    if (!generatedUrlInput.value) return;
+
+    try {
+      await navigator.clipboard.writeText(generatedUrlInput.value);
+      const originalText = copyUrlBtn.textContent;
+      copyUrlBtn.textContent = "Copied!";
+      copyUrlBtn.style.backgroundColor = "#2aa198";
+
+      setTimeout(() => {
+        copyUrlBtn.textContent = originalText;
+        copyUrlBtn.style.backgroundColor = "#268bd2";
+      }, 2000);
+    } catch (err) {
+      alert("Failed to copy. Please select and copy the text box manually.");
+    }
+  });
 
   function loadStateFromHash() {
     if (!window.location.hash || window.location.hash.length <= 1) return;
@@ -154,11 +167,14 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const compressed = window.location.hash.substring(1);
       const decompressed = LZString.decompressFromEncodedURIComponent(compressed);
-      
+
       if (decompressed) {
         const items = JSON.parse(decompressed);
         items.forEach((item) => addItineraryItemToDOM(item));
-        updateHashAndQR();
+        
+        // Show current URL in input
+        generatedUrlInput.value = window.location.href;
+        urlOutputContainer.style.display = "block";
       }
     } catch (err) {
       console.error("Failed to parse URL hash data:", err);

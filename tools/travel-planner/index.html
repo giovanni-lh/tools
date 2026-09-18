@@ -8,9 +8,8 @@
   <!-- KaTeX for Old Style Serif Math/Text rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <!-- URL Hash Compression & QR Code libraries -->
+  <!-- URL Hash Compression Library -->
   <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 
 <body class="solarized-theme">
@@ -68,11 +67,18 @@
       <ul id="itinerary-list" class="drag-list"></ul>
     </div>
 
-    <!-- Share to Mobile Card -->
-    <div class="card" style="text-align: center;">
-      <h2>Open on Phone</h2>
-      <p style="margin-bottom: 10px; font-size: 0.9rem;">Scan this QR code with your mobile camera to transfer the exact itinerary state:</p>
-      <div id="qr-container" style="margin-top: 10px;"></div>
+    <!-- Generate Hash Link Card -->
+    <div class="card">
+      <h2>Share Itinerary</h2>
+      <p style="margin-bottom: 15px; font-size: 0.9rem;">
+        Click below when finished planning to generate a shareable URL containing your full itinerary.
+      </p>
+      <button id="generate-url-btn" class="btn">🔗 Generate Share Link</button>
+
+      <div id="url-output-container" style="display: none; margin-top: 15px;">
+        <input type="text" id="generated-url" readonly style="width: 100%; padding: 8px 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;" />
+        <button id="copy-url-btn" class="btn" style="background-color: #268bd2;">Copy Link to Clipboard</button>
+      </div>
     </div>
   </div>
 
