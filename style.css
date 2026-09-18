@@ -119,3 +119,129 @@ p {
   background-color: #ccc;
   cursor: not-allowed;
 }
+/* Solarized Light Theme Variables */
+.solarized-theme {
+  --sol-bg: #fdf6e3;       /* Solarized Base3 (White/Cream) */
+  --sol-card: #eee8d5;     /* Solarized Base2 */
+  --sol-text: #657b83;     /* Solarized Base00 */
+  --sol-heading: #073642;  /* Solarized Base02 */
+  --sol-accent: #268bd2;   /* Solarized Blue */
+  --sol-border: #d33682;   /* Solarized Magenta accent border */
+  
+  background-color: var(--sol-bg);
+  color: var(--sol-text);
+  font-family: "Latin Modern Roman", "Computer Modern Custom", "Georgia", "Times New Roman", serif;
+}
+
+.solarized-theme h1, .solarized-theme h2, .solarized-theme h3 {
+  color: var(--sol-heading);
+  font-family: "Latin Modern Roman", "Georgia", serif;
+  font-weight: normal;
+}
+
+.card {
+  background: var(--sol-card);
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid #e0d6c3;
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  color: var(--sol-heading);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font-family: inherit;
+}
+
+/* Drag and Drop Itinerary Items */
+.drag-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.drag-item {
+  background: #fff;
+  border: 1px solid #dcd3c1;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: grab;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.drag-item.dragging {
+  opacity: 0.5;
+  background: #f5edd6;
+}
+
+.drag-handle {
+  cursor: grab;
+  font-size: 1.2rem;
+  color: #93a1a1;
+  user-select: none;
+}
+
+.item-content {
+  flex: 1;
+}
+
+.item-meta {
+  font-size: 0.85rem;
+  color: #839496;
+  margin-bottom: 4px;
+}
+
+.item-title {
+  font-weight: bold;
+  font-size: 1.05rem;
+  color: var(--sol-heading);
+}
+
+.item-map-link {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--sol-accent);
+  text-decoration: none;
+  margin-top: 4px;
+}
+
+/* Resized thumbnail review */
+.item-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: #dc322f;
+  cursor: pointer;
+  font-size: 1.1rem;
+}

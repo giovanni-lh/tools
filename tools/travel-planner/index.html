@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Planner — Old Style</title>
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- KaTeX for Old Style Serif Math/Text rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+</head>
+
+<body class="solarized-theme">
+  <div class="container">
+    <a href="../../" class="back-btn">← Back to Tools Hub</a>
+
+    <header class="planner-header">
+      <h1 id="latex-title"></h1>
+      <p class="subtitle">Organize itinerary activities with drag-and-drop reordering.</p>
+    </header>
+
+    <!-- Add Activity Form -->
+    <div class="card form-card">
+      <h2>Add Itinerary Item</h2>
+      <form id="planner-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" required />
+          </div>
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" id="time" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="destination">Destination</label>
+          <input type="text" id="destination" placeholder="e.g. Kyoto Imperial Palace" required />
+        </div>
+
+        <div class="form-group">
+          <label for="activity">Activity Details</label>
+          <input type="text" id="activity" placeholder="e.g. Morning walk through gardens" required />
+        </div>
+
+        <div class="form-group">
+          <label for="map-link">Google Maps URL</label>
+          <input type="url" id="map-link" placeholder="https://maps.google.com/..." />
+        </div>
+
+        <div class="form-group">
+          <label for="photo-input">Sample Photo Review (Auto Resized & Rescaled)</label>
+          <input type="file" id="photo-input" accept="image/*" />
+        </div>
+
+        <button type="submit" class="btn">Add to Itinerary</button>
+      </form>
+    </div>
+
+    <!-- Drag & Drop Itinerary List -->
+    <div class="card">
+      <h2>Itinerary</h2>
+      <p class="drag-hint">Drag handle ☰ to reorder items</p>
+      <ul id="itinerary-list" class="drag-list"></ul>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
