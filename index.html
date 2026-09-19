@@ -6,12 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web Tools Directory</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- KaTeX for LaTeX-inspired serif rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 </head>
 
-<body>
+<body class="solarized-theme">
   <div class="container">
     <header>
-      <h1>Web Tools Hub</h1>
+      <h1 id="latex-title">Web Tools Hub</h1>
       <p>A collection of useful client-side utilities.</p>
     </header>
 
@@ -27,13 +30,21 @@
       <a href="./tools/travel-planner/" class="tool-card">
         <div>
           <h3>✈️ Travel Planner</h3>
-          <p>Organize trip itineraries with image resizing, Google Maps integration, drag-and-drop reordering, and
-            Solarized Light aesthetics.</p>
+          <p>Organize trip itineraries with image resizing, Google Maps integration, drag-and-drop reordering, and Solarized Light aesthetics.</p>
         </div>
       </a>
-
     </main>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.katex) {
+        katex.render("\\mathcal{W}\\text{eb } \\mathcal{T}\\text{ools } \\mathcal{H}\\text{ub}", document.getElementById("latex-title"), {
+          throwOnError: false
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

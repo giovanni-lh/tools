@@ -21,10 +21,19 @@
       <p class="subtitle">Organize itinerary activities with drag-and-drop reordering.</p>
     </header>
 
-    <!-- Form Section -->
-    <div class="card form-card">
-      <h2>Add Itinerary Item</h2>
+    <!-- Toggle Form Button -->
+    <div style="margin-bottom: 20px;">
+      <button id="toggle-form-btn" class="btn">+ Add New Plan</button>
+    </div>
+
+    <!-- Form Section (Hidden by default) -->
+    <div id="form-container" class="card form-card" style="display: none;">
+      <div class="form-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h2 id="form-title">Add Itinerary Item</h2>
+        <button id="close-form-btn" class="delete-btn" style="font-size: 1.5rem;" title="Close form">✕</button>
+      </div>
       <form id="planner-form">
+        <input type="hidden" id="edit-item-id" value="" />
         <div class="form-row">
           <div class="form-group">
             <label for="date">Date</label>
@@ -56,15 +65,21 @@
           <input type="file" id="photo-input" accept="image/*" />
         </div>
 
-        <button type="submit" class="btn">Add to Itinerary</button>
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn" id="submit-btn">Add to Itinerary</button>
+          <button type="button" class="btn" style="background-color: #839496;" id="cancel-btn">Cancel</button>
+        </div>
       </form>
     </div>
 
     <!-- Itinerary Section -->
     <div class="card">
       <h2>Itinerary</h2>
-      <p class="drag-hint">Drag handle ☰ to reorder items</p>
+      <p class="drag-hint" style="font-size: 0.85rem; color: #839496; margin-bottom: 10px;">Drag handle ☰ to reorder items</p>
       <ul id="itinerary-list" class="drag-list"></ul>
+      <p id="empty-state" style="text-align: center; color: #839496; padding: 20px;">
+        No items yet. <button id="quick-add-btn" class="btn" style="background: none; border: none; color: #268bd2; cursor: pointer; text-decoration: underline; padding: 0;">Add your first plan</button>
+      </p>
     </div>
 
     <!-- Generate Hash Link Card -->
